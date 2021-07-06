@@ -1,0 +1,22 @@
+﻿@model IEnumerable<BigShool.Models.Course>
+@{
+    ViewBag.Title = "Home Page";
+}
+@using BigShool.Models;
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.Owin;
+
+@{
+    var systemFind = System.Web.HttpContext.Current.GetOwinContext()
+                .GetUserManager<ApplicationUserManager>();
+}
+<div class="row"style="margin:16px 0;"> 
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>
+                @item.DateTime.ToString("dd/MM/yyyy HH:mm") -  @systemFind.FindById(item.LecturerId).Name
+            </li>
+        }
+    </ul>
+</div>

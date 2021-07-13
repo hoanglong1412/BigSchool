@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<BigShool.Models.Course>
+
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Mine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @using BigShool.Models;
 @using Microsoft.AspNet.Identity;
@@ -10,7 +12,8 @@
     var systemFind = System.Web.HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>();
 }
-<div class="row"style="margin:16px 0;"> 
+<a class="btn btn-info" style="margin:16px 0;" href="@Url.Action("Create","Course")">Create</a>
+<div class="row" style="margin:16px 0;">
     <ul class="course">
         @foreach (var item in Model)
         {
@@ -29,12 +32,14 @@
                     </span>
                     <span class="category">
                         @item.Category.Name
+                        <div class="action">
+                            <a href="#">Edit</a>
+                            <a href="#">Delete</a>
+                        </div>
                     </span>
-                    <button data-course-id="@item.Id" class="btn btn-default btn-sm js-tongle-attendances">Going?</button>
                 </div>
-                @*@item.DateTime.ToString("dd/MM/yyyy HH:mm") -  @systemFind.FindById(item.LecturerId).Name*@
+         
             </li>
         }
     </ul>
 </div>
-

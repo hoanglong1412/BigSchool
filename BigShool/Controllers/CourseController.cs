@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BigShool.Models;
@@ -11,6 +13,7 @@ namespace BigShool.Controllers
 {
     public class CourseController : Controller
     {
+        MyDBContext db = new MyDBContext();
         // GET: Course
         public ActionResult Create()
         {
@@ -65,6 +68,58 @@ namespace BigShool.Controllers
             var courses = db.Course.Where(m => m.DateTime > DateTime.Now && m.LecturerId == user.Id).ToList();
  
             return View(courses);
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Course course = db.Course.Find(id);
+            if (course == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name", course.CategoryId);
+            return View(course);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,LecturerId,Place,DateTime,CategoryId")] Course course)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(course).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Mine");
+            }
+            ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name", course.CategoryId);
+            return View(course);
+        }
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Course course = db.Course.Find(id);
+            if (course == null)
+            {
+                return HttpNotFound();
+            }
+            return View(course);
+        }
+
+        // POST: Test/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Course course = db.Course.Find(id);
+            db.Course.Remove(course);
+            db.SaveChanges();
+            return RedirectToAction("Mine");
         }
     }
 }

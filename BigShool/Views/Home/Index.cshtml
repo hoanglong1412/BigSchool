@@ -26,11 +26,33 @@
                 <div class="detail">
                     <span class="lecture">
                         @systemFind.FindById(item.LecturerId).Name
+                        @if (item.isLogin)
+                        {
+                            if (item.isShowFollow)
+                            {
+                                <button data-user-id="@item.LecturerId" class="btn btn-default btn-sm js-tongle-follow">Follow</button>
+                            }
+                            else
+                            {
+                                <button data-user-id="@item.LecturerId" class="btn btn-success btn-sm js-tongle-follow">Following</button>
+                            }
+                        }
                     </span>
                     <span class="category">
                         @item.Category.Name
                     </span>
-                    <button data-course-id="@item.Id" class="btn btn-default btn-sm js-tongle-attendances">Going?</button>
+                    @if (item.isLogin)
+                    {
+                        if (item.isShowGoing)
+                        {
+                            <button data-course-id="@item.Id" class="btn btn-default btn-sm js-tongle-attendances">Going?</button>
+                        }
+                        else
+                        {
+                            <button data-course-id="@item.Id" class="btn btn-info btn-sm js-tongle-attendances">Going</button>
+
+                        }
+                    }
                 </div>
                 @*@item.DateTime.ToString("dd/MM/yyyy HH:mm") -  @systemFind.FindById(item.LecturerId).Name*@
             </li>

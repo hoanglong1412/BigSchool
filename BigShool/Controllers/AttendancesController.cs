@@ -18,7 +18,11 @@ namespace BigShool.Controllers
             var userID = User.Identity.GetUserId();
             if(db.Attendance.Any(m=>m.Attendee == userID && m.CourseId == attenC.Id))
             {
-                return BadRequest("The attendaces already exist");  
+                //return BadRequest("The attendaces already exist");  
+                db.Attendance.Remove(db.Attendance.SingleOrDefault(p =>
+                p.Attendee == userID && p.CourseId == attenC.Id));
+                db.SaveChanges();
+                return Ok("cancel");
             }
             var attendance = new Attendance()
             {

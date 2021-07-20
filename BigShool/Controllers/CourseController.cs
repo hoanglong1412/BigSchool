@@ -14,6 +14,7 @@ namespace BigShool.Controllers
     public class CourseController : Controller
     {
         MyDBContext db = new MyDBContext();
+  
         // GET: Course
         public ActionResult Create()
         {
@@ -120,6 +121,40 @@ namespace BigShool.Controllers
             db.Course.Remove(course);
             db.SaveChanges();
             return RedirectToAction("Mine");
+        }
+
+        public ActionResult LectureIamGoing()
+        {
+            ApplicationUser currentUser =
+            System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>()
+            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            //danh sách giảng viên được theo dõi bởi người dùng (đăng nhập) hiện tại
+            var listFollwee = db.Following.Where(p => p.FollowerId ==
+
+            currentUser.Id).ToList();
+
+            //danh sách các khóa học mà người dùng đã đăng ký
+            var listAttendances = db.Attendance.Where(p => p.Attendee ==
+
+            currentUser.Id).ToList();
+
+            var courses = new List<Course>();
+            foreach (var course in listAttendances)
+
+            {
+                foreach (var item in listFollwee)
+                {
+                    if (item.ForlloweeId == course.Course.LecturerId)
+                    {
+                        Course objCourse = course.Course;
+                        objCourse.LectureName =
+                        System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>()
+                        .FindById(objCourse.LecturerId).Name;
+                        courses.Add(objCourse);
+                    }
+                }
+            }
+            return View(courses);
         }
     }
 }
